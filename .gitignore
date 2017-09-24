@@ -17,3 +17,6 @@ local.properties
 
 # Java
 *.class
+
+# Generated APK
+app/*.apk
