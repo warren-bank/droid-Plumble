@@ -263,16 +263,24 @@ public class Settings {
         }
     }
 
+    public boolean isScreenOn() {
+        return preferences.getBoolean("isScreenOn", true);
+    }
+
+    public boolean isInForeground() {
+        return preferences.getBoolean("isInForeground", true);
+    }
+
     public int getInputSampleRate() {
-        return Integer.parseInt(preferences.getString(Settings.PREF_INPUT_RATE, DEFAULT_RATE));
+        return Integer.parseInt(preferences.getString(PREF_INPUT_RATE, DEFAULT_RATE));
     }
 
     public int getInputQuality() {
-        return preferences.getInt(Settings.PREF_INPUT_QUALITY, DEFAULT_INPUT_QUALITY);
+        return preferences.getInt(PREF_INPUT_QUALITY, DEFAULT_INPUT_QUALITY);
     }
 
     public float getAmplitudeBoostMultiplier() {
-        return (float)preferences.getInt(Settings.PREF_AMPLITUDE_BOOST, DEFAULT_AMPLITUDE_BOOST)/100;
+        return (float)preferences.getInt(PREF_AMPLITUDE_BOOST, DEFAULT_AMPLITUDE_BOOST)/100;
     }
 
     public float getDetectionThreshold() {
@@ -331,7 +339,7 @@ public class Settings {
 
     /* @return the height of PTT button */
     public int getPTTButtonHeight() {
-        return preferences.getInt(Settings.PREF_PTT_BUTTON_HEIGHT, DEFAULT_PTT_BUTTON_HEIGHT);
+        return preferences.getInt(PREF_PTT_BUTTON_HEIGHT, DEFAULT_PTT_BUTTON_HEIGHT);
     }
 
     /**

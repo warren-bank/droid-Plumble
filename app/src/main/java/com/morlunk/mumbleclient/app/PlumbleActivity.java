@@ -19,9 +19,12 @@ package com.morlunk.mumbleclient.app;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -233,6 +236,23 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         }
     };
 
+    private SharedPreferences preferences;
+
+    private final BroadcastReceiver monitor_screen_power_state = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences.Editor prefEditor = preferences.edit();
+
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                prefEditor.putBoolean("isScreenOn", false);
+                prefEditor.commit();
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                prefEditor.putBoolean("isScreenOn", true);
+                prefEditor.commit();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mSettings = Settings.getInstance(this);
@@ -243,7 +263,7 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
 
         setStayAwake(mSettings.shouldStayAwake());
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.registerOnSharedPreferenceChangeListener(this);
 
         mDatabase = new PlumbleSQLiteDatabase(this); // TODO add support for cloud storage
@@ -329,6 +349,11 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         setVolumeControlStream(mSettings.isHandsetMode() ?
                 AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_MUSIC);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(monitor_screen_power_state, intentFilter);
+
         if(mSettings.isFirstRun()) showSetupWizard();
     }
 
@@ -343,6 +368,14 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         super.onResume();
         Intent connectIntent = new Intent(this, PlumbleService.class);
         bindService(connectIntent, mConnection, 0);
+
+        SharedPreferences.Editor prefEditor = preferences.edit();
+        prefEditor.putBoolean("isInForeground", true);
+        prefEditor.commit();
+
+        if(mService != null) {
+            mService.clearChatNotifications();
+        }
     }
 
     @Override
@@ -361,13 +394,17 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
             mService.setSuppressNotifications(false);
         }
         unbindService(mConnection);
+
+        SharedPreferences.Editor prefEditor = preferences.edit();
+        prefEditor.putBoolean("isInForeground", false);
+        prefEditor.commit();
     }
 
     @Override
     protected void onDestroy() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.unregisterOnSharedPreferenceChangeListener(this);
         mDatabase.close();
+        unregisterReceiver(monitor_screen_power_state);
         super.onDestroy();
     }
 

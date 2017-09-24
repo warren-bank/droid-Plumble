@@ -223,7 +223,9 @@ public class PlumbleService extends JumbleService implements
 
             // TODO: create a customizable notification sieve
             if (mSettings.isChatNotifyEnabled()) {
-                mMessageNotification.show(message);
+                if (!mSettings.isScreenOn() || !mSettings.isInForeground()) {
+                    mMessageNotification.show(message);
+                }
             }
 
             mMessageLog.add(new IChatMessage.TextMessage(message));
