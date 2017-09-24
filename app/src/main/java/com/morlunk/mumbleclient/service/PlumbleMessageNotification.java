@@ -21,6 +21,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -81,6 +82,7 @@ public class PlumbleMessageNotification {
                 .setContentTitle(message.getActorName())
                 .setContentText(message.getMessage())
                 .setVibrate(VIBRATION_PATTERN)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setStyle(style);
 
         if (mUnreadMessages.size() > 0)
