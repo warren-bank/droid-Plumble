@@ -19,6 +19,7 @@ package com.morlunk.mumbleclient.service;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -27,6 +28,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.view.WindowManager;
@@ -223,8 +225,14 @@ public class PlumbleService extends JumbleService implements
 
             // TODO: create a customizable notification sieve
             if (mSettings.isChatNotifyEnabled()) {
-                if (!mSettings.isScreenOn() || !mSettings.isInForeground()) {
-                    mMessageNotification.show(message);
+                if (mSettings.isScreenOn() && mSettings.isInForeground()) {
+                    Vibrator vibratorSvc = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibratorSvc.hasVibrator()) {
+                        vibratorSvc.vibrate(100);
+                    }
+                }
+                else {
+                    mMessageNotification.show(message, true, true);
                 }
             }
 

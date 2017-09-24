@@ -58,7 +58,7 @@ public class PlumbleMessageNotification {
      * If the notification is already shown, append the message to the existing notification.
      * @param message The message to notify the user about.
      */
-    public void show(IMessage message) {
+    public void show(IMessage message, boolean add_vibration, boolean add_sound) {
         mUnreadMessages.add(message);
 
         NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
@@ -81,9 +81,12 @@ public class PlumbleMessageNotification {
                 .setTicker(message.getActorName())
                 .setContentTitle(message.getActorName())
                 .setContentText(message.getMessage())
-                .setVibrate(VIBRATION_PATTERN)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setStyle(style);
+
+        if (add_vibration)
+            builder.setVibrate(VIBRATION_PATTERN);
+        if (add_sound)
+            builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
         if (mUnreadMessages.size() > 0)
             builder.setNumber(mUnreadMessages.size());
