@@ -57,7 +57,7 @@ public class ServerConnectTask extends AsyncTask<Server, Void, Intent> {
         int inputMethod = mSettings.getJumbleInputMethod();
 
         int audioSource = mSettings.isHandsetMode() ?
-                MediaRecorder.AudioSource.DEFAULT : MediaRecorder.AudioSource.MIC;
+                ((android.os.Build.VERSION.SDK_INT >= 11) ? MediaRecorder.AudioSource.VOICE_COMMUNICATION : MediaRecorder.AudioSource.DEFAULT) : MediaRecorder.AudioSource.MIC;
         int audioStream = mSettings.isHandsetMode() ?
                 AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_MUSIC;
 
