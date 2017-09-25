@@ -49,6 +49,8 @@ import java.util.Set;
  * @author morlunk
  */
 public class Settings {
+    public static final boolean debug = false;
+
     public static final String PREF_INPUT_METHOD = "audioInputMethod";
     public static final Set<String> ARRAY_INPUT_METHODS;
     /** Voice activity transmits depending on the amplitude of user input. */
@@ -156,7 +158,10 @@ public class Settings {
     public static final boolean DEFAULT_HALF_DUPLEX = false;
 
     public static final String PREF_HANDSET_MODE = "handset_mode";
-    public static final boolean DEFAULT_HANDSET_MODE = false;
+    public static final boolean DEFAULT_HANDSET_MODE = true;
+
+    public static final String PREF_HANDSET_MODE_PROXIMITY = "handsetMode_proximity";
+    public static final boolean DEFAULT_HANDSET_MODE_PROXIMITY = false;
 
     public static final String PREF_PTT_SOUND = "ptt_sound";
     public static final boolean DEFAULT_PTT_SOUND = false;
@@ -442,6 +447,10 @@ public class Settings {
 
     public boolean isHandsetMode() {
         return preferences.getBoolean(PREF_HANDSET_MODE, DEFAULT_HANDSET_MODE);
+    }
+
+    public boolean useProximitySensor() {
+        return preferences.getBoolean(PREF_HANDSET_MODE_PROXIMITY, DEFAULT_HANDSET_MODE_PROXIMITY);
     }
 
     public boolean isPttSoundEnabled() {

@@ -352,9 +352,7 @@ public class PlumbleService extends JumbleService implements
             mHotCorner.setShown(true);
         }
         // Configure proximity sensor
-        if (mSettings.isHandsetMode()) {
-            setProximitySensorOn(true);
-        }
+        setProximitySensorOn(true);
     }
 
     @Override
@@ -392,7 +390,7 @@ public class PlumbleService extends JumbleService implements
                 mChannelOverlay.setPushToTalkShown(inputMethod == Constants.TRANSMIT_PUSH_TO_TALK);
                 break;
             case Settings.PREF_HANDSET_MODE:
-                setProximitySensorOn(isConnectionEstablished() && mSettings.isHandsetMode());
+                setProximitySensorOn(isConnectionEstablished());
                 changedExtras.putInt(JumbleService.EXTRAS_AUDIO_STREAM, mSettings.isHandsetMode() ?
                                      AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_MUSIC);
                 break;
@@ -466,15 +464,48 @@ public class PlumbleService extends JumbleService implements
         }
     }
 
-    private void setProximitySensorOn(boolean on) {
-        if(on) {
+    public void setProximitySensorOn(boolean on) {
+        boolean enable  = on && (mProximityLock == null) && mSettings.isHandsetMode() && mSettings.useProximitySensor() && mSettings.isInForeground() && mSettings.isScreenOn();
+        boolean disable = !on && (mProximityLock != null) && !mSettings.isInForeground() && mSettings.isScreenOn();
+
+        if (mSettings.debug) {
+            Context context = getApplicationContext();
+            CharSequence text = (on ? "T" : "F") + ((mProximityLock == null) ? "T" : "F") + (mSettings.isHandsetMode() ? "T" : "F") + (mSettings.useProximitySensor() ? "T" : "F") + (mSettings.isScreenOn() ? "T" : "F") + (mSettings.isInForeground() ? "T" : "F");
+            int duration = android.widget.Toast.LENGTH_LONG;
+            android.widget.Toast toast = android.widget.Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
+        if (mSettings.debug && disable) {
+            Vibrator vibratorSvc = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibratorSvc.hasVibrator()) {
+                vibratorSvc.vibrate(100);
+            }
+        }
+
+        if (enable) {
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             mProximityLock = pm.newWakeLock(PROXIMITY_SCREEN_OFF_WAKE_LOCK, "plumble_proximity");
             mProximityLock.acquire();
-        } else {
-            if(mProximityLock != null) mProximityLock.release();
+        }
+
+        if (disable) {
+            mProximityLock.release();
             mProximityLock = null;
         }
+    }
+
+    public void setProximitySensorOn(final boolean on, final int delay) {
+        final PlumbleService self = this;
+
+        new android.os.Handler().postDelayed(
+            new Runnable() {
+                public void run() {
+                    self.setProximitySensorOn(on);
+                }
+            },
+            delay
+        );
     }
 
     @Override

@@ -14,6 +14,10 @@ public interface IPlumbleService extends IJumbleService {
 
     void clearChatNotifications();
 
+    void setProximitySensorOn(boolean on);
+
+    void setProximitySensorOn(final boolean on, final int delay);
+
     void markErrorShown();
 
     boolean isErrorShown();

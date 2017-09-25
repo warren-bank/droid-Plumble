@@ -145,6 +145,10 @@ public class Preferences extends PreferenceActivity {
         inputPreference.setOnPreferenceChangeListener(prefChangeListener);
         updateAudioDependents(screen, inputPreference, inputPreference.getValue());
 
+        CheckBoxPreference handsetMode = (CheckBoxPreference) screen.findPreference(Settings.PREF_HANDSET_MODE);
+        handsetMode.setOnPreferenceChangeListener(prefChangeListener);
+        updateAudioDependents(screen, handsetMode, Boolean.valueOf(handsetMode.isChecked()));
+
         // Scan each bitrate and determine if the device supports it
         ListPreference inputQualityPreference = (ListPreference) screen.findPreference(Settings.PREF_INPUT_RATE);
         String[] bitrateNames = new String[inputQualityPreference.getEntryValues().length];
@@ -164,6 +168,11 @@ public class Preferences extends PreferenceActivity {
                 PreferenceCategory vadCategory = (PreferenceCategory) screen.findPreference("vad_settings");
                 pttCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_PTT.equals(inputMethod));
                 vadCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_VOICE.equals(inputMethod));
+                break;
+            case Settings.PREF_HANDSET_MODE:
+                boolean handsetMode = ((Boolean) newValue).booleanValue();
+                PreferenceCategory handsetModeSettings = (PreferenceCategory) screen.findPreference("handsetMode_settings");
+                handsetModeSettings.setEnabled(handsetMode);
                 break;
         }
     }

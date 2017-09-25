@@ -375,6 +375,7 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
 
         if(mService != null) {
             mService.clearChatNotifications();
+            mService.setProximitySensorOn(true, 500);  // adds 500ms delay to ensure that "monitor_screen_power_state" executes first
         }
     }
 
@@ -392,6 +393,7 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
             }
             mService.unregisterObserver(mObserver);
             mService.setSuppressNotifications(false);
+            mService.setProximitySensorOn(false, 500);  // adds 500ms delay to ensure that "monitor_screen_power_state" executes first
         }
         unbindService(mConnection);
 

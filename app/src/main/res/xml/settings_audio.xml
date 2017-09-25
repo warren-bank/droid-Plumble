@@ -30,7 +30,7 @@
         android:key="handset_mode"
         android:title="@string/handsetMode"
         android:summary="@string/handsetModeSum"
-        android:defaultValue="false"/>
+        android:defaultValue="true"/>
 
     <com.morlunk.mumbleclient.preference.SeekBarDialogPreference
         android:title="@string/audioInputVolume"
@@ -85,6 +85,14 @@
             android:key="half_duplex"
             android:title="@string/halfDuplex"
             android:summary="@string/halfDuplexSum"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/handsetModeSettings"
+        android:key="handsetMode_settings">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="handsetMode_proximity"
+            android:summary="@string/handsetModeProximitySensorSum"
+            android:title="@string/handsetModeProximitySensor"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/advancedAudio" >
 
