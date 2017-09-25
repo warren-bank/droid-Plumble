@@ -29,6 +29,7 @@ import android.media.AudioRecord;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -64,7 +65,6 @@ public class Preferences extends PreferenceActivity {
     public static final String ACTION_PREFS_APPEARANCE = "com.morlunk.mumbleclient.app.PREFS_APPEARANCE";
     public static final String ACTION_PREFS_ABOUT = "com.morlunk.mumbleclient.app.PREFS_ABOUT";
 
-    private static final String USE_TOR_KEY = "useTor";
     private static final String VERSION_KEY = "version";
 
     @Override
@@ -77,7 +77,7 @@ public class Preferences extends PreferenceActivity {
         if (action != null) {
             if (ACTION_PREFS_GENERAL.equals(action)) {
                 addPreferencesFromResource(R.xml.settings_general);
-                configureOrbotPreferences(getPreferenceScreen());
+                configureGeneralPreferences(getPreferenceScreen());
             } else if (ACTION_PREFS_AUTHENTICATION.equals(action)) {
                 addPreferencesFromResource(R.xml.settings_authentication);
             } else if (ACTION_PREFS_AUDIO.equals(action)) {
@@ -105,20 +105,45 @@ public class Preferences extends PreferenceActivity {
         return PlumblePreferenceFragment.class.getName().equals(fragmentName);
     }
 
-    private static void configureOrbotPreferences(PreferenceScreen screen) {
-        Preference useOrbotPreference = screen.findPreference(USE_TOR_KEY);
+    private static void configureGeneralPreferences(final PreferenceScreen screen) {
+        Preference useOrbotPreference = screen.findPreference(Settings.PREF_USE_TOR);
         useOrbotPreference.setEnabled(OrbotHelper.isOrbotInstalled(screen.getContext()));
+
+        Preference.OnPreferenceChangeListener prefChangeListener = new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                updateGeneralDependents(screen, preference, newValue);
+                return true;
+            }
+        };
+
+        CheckBoxPreference chatNotify = (CheckBoxPreference) screen.findPreference(Settings.PREF_CHAT_NOTIFY);
+        chatNotify.setOnPreferenceChangeListener(prefChangeListener);
+        updateGeneralDependents(screen, chatNotify, Boolean.valueOf(chatNotify.isChecked()));
+    }
+
+    private static void updateGeneralDependents(PreferenceScreen screen, Preference preference, Object newValue) {
+        switch (preference.getKey()) {
+            case Settings.PREF_CHAT_NOTIFY:
+                boolean chatNotify = ((Boolean) newValue).booleanValue();
+                PreferenceCategory chatNotificationSettings = (PreferenceCategory) screen.findPreference("chatNotify_settings");
+                chatNotificationSettings.setEnabled(chatNotify);
+                break;
+        }
     }
 
     private static void configureAudioPreferences(final PreferenceScreen screen) {
-        ListPreference inputPreference = (ListPreference) screen.findPreference(Settings.PREF_INPUT_METHOD);
-        inputPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        Preference.OnPreferenceChangeListener prefChangeListener = new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                updateAudioDependents(screen, (String) newValue);
+                updateAudioDependents(screen, preference, newValue);
                 return true;
             }
-        });
+        };
+
+        ListPreference inputPreference = (ListPreference) screen.findPreference(Settings.PREF_INPUT_METHOD);
+        inputPreference.setOnPreferenceChangeListener(prefChangeListener);
+        updateAudioDependents(screen, inputPreference, inputPreference.getValue());
 
         // Scan each bitrate and determine if the device supports it
         ListPreference inputQualityPreference = (ListPreference) screen.findPreference(Settings.PREF_INPUT_RATE);
@@ -129,15 +154,18 @@ public class Preferences extends PreferenceActivity {
             bitrateNames[x] = bitrate+"Hz" + (supported ? "" : " (unsupported)");
         }
         inputQualityPreference.setEntries(bitrateNames);
-
-        updateAudioDependents(screen, inputPreference.getValue());
     }
 
-    private static void updateAudioDependents(PreferenceScreen screen, String inputMethod) {
-        PreferenceCategory pttCategory = (PreferenceCategory) screen.findPreference("ptt_settings");
-        PreferenceCategory vadCategory = (PreferenceCategory) screen.findPreference("vad_settings");
-        pttCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_PTT.equals(inputMethod));
-        vadCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_VOICE.equals(inputMethod));
+    private static void updateAudioDependents(PreferenceScreen screen, Preference preference, Object newValue) {
+        switch (preference.getKey()) {
+            case Settings.PREF_INPUT_METHOD:
+                String inputMethod = (String) newValue;
+                PreferenceCategory pttCategory = (PreferenceCategory) screen.findPreference("ptt_settings");
+                PreferenceCategory vadCategory = (PreferenceCategory) screen.findPreference("vad_settings");
+                pttCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_PTT.equals(inputMethod));
+                vadCategory.setEnabled(Settings.ARRAY_INPUT_METHOD_VOICE.equals(inputMethod));
+                break;
+        }
     }
 
     private static void configureAboutPreferences(Context context, PreferenceScreen screen) {
@@ -162,7 +190,7 @@ public class Preferences extends PreferenceActivity {
             String section = getArguments().getString("settings");
             if ("general".equals(section)) {
                 addPreferencesFromResource(R.xml.settings_general);
-                configureOrbotPreferences(getPreferenceScreen());
+                configureGeneralPreferences(getPreferenceScreen());
             } else if ("authentication".equals(section)) {
                 addPreferencesFromResource(R.xml.settings_authentication);
             } else if ("audio".equals(section)) {

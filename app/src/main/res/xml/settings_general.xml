@@ -73,4 +73,19 @@
         android:key="startUpInPinnedMode"
         android:summary="@string/pref_start_upIn_pinned_mode_sum"
         android:title="@string/pref_start_up_in_pinned_mode" />
+
+    <PreferenceCategory android:title="@string/chatNotificationSettings"
+        android:key="chatNotify_settings">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="chatNotify_vibrate"
+            android:summary="@string/chatNotifyVibrateSum"
+            android:title="@string/chatNotifyVibrate"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="chatNotify_sound"
+            android:summary="@string/chatNotifySoundSum"
+            android:title="@string/chatNotifySound"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

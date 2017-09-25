@@ -76,6 +76,11 @@
 	<string name="noCert">No Certificate</string>
 	<string name="chatNotifications">Chat Notifications</string>
 	<string name="chatNotificationsSum">Show notifications when a user posts in chat.</string>
+	<string name="chatNotificationSettings">Chat Notification Settings</string>
+    <string name="chatNotifyVibrate">Vibrate</string>
+    <string name="chatNotifyVibrateSum">Provide a vibration alert when chat messages are received.</string>
+    <string name="chatNotifySound">Sound</string>
+    <string name="chatNotifySoundSum">Play a sound alert when chat messages are received.</string>
     <string name="defaultUsername">Default Username</string>
     <string name="defaultUsernameSum">The default username to use when connecting to servers.</string>
     <string name="defaultUsernameDefault">Plumble_User</string>

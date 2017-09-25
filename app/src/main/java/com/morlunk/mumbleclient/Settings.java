@@ -90,6 +90,12 @@ public class Settings {
     public static final String PREF_CHAT_NOTIFY = "chatNotify";
     public static final Boolean DEFAULT_CHAT_NOTIFY = true;
 
+    public static final String PREF_CHAT_NOTIFY_VIBRATE = "chatNotify_vibrate";
+    public static final Boolean DEFAULT_CHAT_NOTIFY_VIBRATE = true;
+
+    public static final String PREF_CHAT_NOTIFY_SOUND = "chatNotify_sound";
+    public static final Boolean DEFAULT_CHAT_NOTIFY_SOUND = true;
+
     public static final String PREF_USE_TTS = "useTts";
     public static final Boolean DEFAULT_USE_TTS = true;
 
@@ -365,6 +371,14 @@ public class Settings {
 
     public boolean isChatNotifyEnabled() {
         return preferences.getBoolean(PREF_CHAT_NOTIFY, DEFAULT_CHAT_NOTIFY);
+    }
+
+    public boolean isChatNotifyVibrateEnabled() {
+        return preferences.getBoolean(PREF_CHAT_NOTIFY_VIBRATE, DEFAULT_CHAT_NOTIFY_VIBRATE);
+    }
+
+    public boolean isChatNotifySoundEnabled() {
+        return preferences.getBoolean(PREF_CHAT_NOTIFY_SOUND, DEFAULT_CHAT_NOTIFY_SOUND);
     }
 
     public boolean isTextToSpeechEnabled() {
