@@ -47,6 +47,7 @@ import com.morlunk.jumble.model.WhisperTarget;
 import com.morlunk.jumble.util.IJumbleObserver;
 import com.morlunk.jumble.util.JumbleObserver;
 import com.morlunk.jumble.util.VoiceTargetMode;
+import com.morlunk.mumbleclient.app.PlumbleActivity;
 import com.morlunk.mumbleclient.R;
 import com.morlunk.mumbleclient.Settings;
 import com.morlunk.mumbleclient.util.JumbleServiceFragment;
@@ -231,6 +232,36 @@ public class ChannelFragment extends JumbleServiceFragment implements SharedPref
             // XXX: This ensures that push to talk is disabled when we pause.
             // We don't want to leave the talk state active if the fragment is paused while pressed.
             getService().getSession().setTalkingState(false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        int tabIndex = getTabIndex();
+        selectTab(tabIndex);
+    }
+
+    private int getTabIndex() {
+        int tabIndex = 0;
+        android.content.Intent intent = getActivity().getIntent();
+
+        if (intent != null && intent.hasExtra(PlumbleActivity.EXTRA_TAB_INDEX)) {
+            tabIndex = intent.getIntExtra(PlumbleActivity.EXTRA_TAB_INDEX, 0);
+
+            // one-time use
+            if (tabIndex > 0) getActivity().setIntent(null);
+        }
+        return tabIndex;
+    }
+
+    private void selectTab(int tabIndex) {
+        if (tabIndex > 0) mViewPager.setCurrentItem(tabIndex);
+
+        if (Settings.debug) {
+            CharSequence text = "tab: " + String.valueOf(tabIndex);
+            Settings.toast(getActivity().getApplicationContext(), text);
         }
     }
 

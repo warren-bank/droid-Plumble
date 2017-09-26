@@ -102,6 +102,7 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
      * If specified, the provided integer drawer fragment ID is shown when the activity is created.
      */
     public static final String EXTRA_DRAWER_FRAGMENT = "drawer_fragment";
+    public static final String EXTRA_TAB_INDEX = "tab_index";
 
     private IPlumbleService mService;
     private PlumbleDatabase mDatabase;
@@ -366,6 +367,12 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override

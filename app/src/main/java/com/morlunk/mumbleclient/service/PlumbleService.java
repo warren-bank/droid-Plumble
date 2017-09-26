@@ -469,11 +469,8 @@ public class PlumbleService extends JumbleService implements
         boolean disable = !on && (mProximityLock != null) && !mSettings.isInForeground() && mSettings.isScreenOn();
 
         if (mSettings.debug) {
-            Context context = getApplicationContext();
             CharSequence text = (on ? "T" : "F") + ((mProximityLock == null) ? "T" : "F") + (mSettings.isHandsetMode() ? "T" : "F") + (mSettings.useProximitySensor() ? "T" : "F") + (mSettings.isScreenOn() ? "T" : "F") + (mSettings.isInForeground() ? "T" : "F");
-            int duration = android.widget.Toast.LENGTH_LONG;
-            android.widget.Toast toast = android.widget.Toast.makeText(context, text, duration);
-            toast.show();
+            mSettings.toast(getApplicationContext(), text);
         }
 
         if (mSettings.debug && disable) {

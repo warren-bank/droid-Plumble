@@ -51,6 +51,12 @@ import java.util.Set;
 public class Settings {
     public static final boolean debug = false;
 
+    public static void toast(Context context, CharSequence text) {
+        int duration = android.widget.Toast.LENGTH_LONG;
+        android.widget.Toast toast = android.widget.Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
     public static final String PREF_INPUT_METHOD = "audioInputMethod";
     public static final Set<String> ARRAY_INPUT_METHODS;
     /** Voice activity transmits depending on the amplitude of user input. */
