@@ -354,6 +354,11 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(monitor_screen_power_state, intentFilter);
 
+        // Do not automatically open the OnScreenKeyboard.
+        getWindow().setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+
         if(mSettings.isFirstRun()) showSetupWizard();
     }
 
