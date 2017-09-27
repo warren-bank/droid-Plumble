@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -263,6 +264,7 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         setContentView(R.layout.activity_main);
 
         setStayAwake(mSettings.shouldStayAwake());
+        setScreenOrientationLock(mSettings.isScreenOrientationLocked());
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.registerOnSharedPreferenceChangeListener(this);
@@ -649,6 +651,15 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
         }
     }
 
+    private void setScreenOrientationLock(boolean lock_orientation) {
+        if (lock_orientation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
+    }
+
     /**
      * Updates the activity to represent the connection state of the given service.
      * Will show reconnecting dialog if reconnecting, dismiss otherwise, etc.
@@ -784,6 +795,8 @@ public class PlumbleActivity extends ActionBarActivity implements ListView.OnIte
             }
         } else if (Settings.PREF_STAY_AWAKE.equals(key)) {
             setStayAwake(mSettings.shouldStayAwake());
+        } else if (Settings.PREF_LOCK_SCREEN_ORIENTATION.equals(key)) {
+            setScreenOrientationLock(mSettings.isScreenOrientationLocked());
         } else if (Settings.PREF_HANDSET_MODE.equals(key)) {
             setVolumeControlStream(mSettings.isHandsetMode() ?
                     AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_MUSIC);

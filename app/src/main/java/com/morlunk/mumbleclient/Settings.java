@@ -178,6 +178,9 @@ public class Settings {
     public static final String PREF_STAY_AWAKE = "stay_awake";
     public static final boolean DEFAULT_STAY_AWAKE = false;
 
+    public static final String PREF_LOCK_SCREEN_ORIENTATION = "lock_screen_orientation";
+    public static final Boolean DEFAULT_LOCK_SCREEN_ORIENTATION = true;
+
     public static final String PREF_SHOW_USER_COUNT = "show_user_count";
     public static final boolean DEFAULT_SHOW_USER_COUNT = false;
 
@@ -469,6 +472,10 @@ public class Settings {
 
     public boolean shouldStayAwake() {
         return preferences.getBoolean(PREF_STAY_AWAKE, DEFAULT_STAY_AWAKE);
+    }
+
+    public boolean isScreenOrientationLocked() {
+        return preferences.getBoolean(PREF_LOCK_SCREEN_ORIENTATION, DEFAULT_LOCK_SCREEN_ORIENTATION);
     }
 
     public void setDefaultCertificateId(long defaultCertificateId) {

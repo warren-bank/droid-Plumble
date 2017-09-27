@@ -32,6 +32,12 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
+        android:key="lock_screen_orientation"
+        android:summary="@string/lock_screen_orientation_sum"
+        android:title="@string/lock_screen_orientation"/>
+
+    <CheckBoxPreference
+        android:defaultValue="true"
         android:key="useTts"
         android:summary="@string/useTtsSum"
         android:title="@string/useTts" />
